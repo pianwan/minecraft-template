@@ -1,0 +1,18 @@
+#!/bin/bash
+
+JENKINS_URL="${1:-https://ci.viaversion.com}"
+JOB_NAME="${2:-ViaVersion}"
+JAR_NAME="${3:-ViaVersion}"
+
+# Fetch artifact list and match the desired file
+API_URL="$JENKINS_URL/job/$JOB_NAME/lastSuccessfulBuild/api/json"
+ARTIFACT_NAME=$(curl -s "$API_URL" | jq -r '.artifacts[].relativePath' | grep "${JAR_NAME}.*\.jar$" | head -n 1)
+echo $ARTIFACT_NAME
+
+if [ -n "$ARTIFACT_NAME" ]; then
+    DOWNLOAD_URL="$JENKINS_URL/job/$JOB_NAME/lastSuccessfulBuild/artifact/$ARTIFACT_NAME"
+    echo "Downloading $ARTIFACT_NAME from $DOWNLOAD_URL"
+    curl -o /cached_plugins/${JAR_NAME}.jar "$DOWNLOAD_URL"
+else
+    echo "No matching artifact found!"
+fi

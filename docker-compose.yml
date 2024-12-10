@@ -1,0 +1,120 @@
+version: '1.0.0'
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mc-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: inner_password
+      MYSQL_DATABASE: minecraft
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pexample"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+      start_period: 5s
+  redis:
+    image: redis:8.0-M02-alpine
+    container_name: mc-redis
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: unless-stopped
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+  ########################
+  # Proxy
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: mc-proxy
+    environment:
+      TYPE: VELOCITY
+      MEMORY: 512m
+      PLUGINS: |
+        /cached_plugins/ViaVersion.jar
+        /cached_plugins/LuckPerms-Velocity.jar
+        https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/velocity
+    volumes:
+      - ./proxy/data:/server
+    ports:
+      - "25565:25565"
+      - "19132:19132/udp"
+    networks:
+      - mc-protocol
+      - mysql
+      - redis
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+  ##########################
+  # Hub
+  hub:
+    build:
+      context: ./hub
+      dockerfile: Dockerfile
+    container_name: mc-hub
+    environment:
+      TYPE: PURPUR
+      VERSION: 1.21.4
+      ONLINE_MODE: FALSE
+      SERVER_NAME: HUB
+      MEMORY: 2G
+    stdin_open: true
+    restart: unless-stopped
+    volumes:
+      - ./hub/data:/data
+    networks:
+      - mc-protocol
+      - mysql
+      - redis
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+  island-main:
+    build:
+      context: ./island-main
+      dockerfile: Dockerfile
+    container_name: mc-island-main
+    environment:
+      TYPE: PURPUR
+      VERSION: 1.21.4
+      ONLINE_MODE: FALSE
+      SERVER_NAME: ISLAND-MAIN
+      MEMORY: 2G
+    stdin_open: true
+    restart: unless-stopped
+    volumes:
+      - ./island-main/data:/data
+    networks:
+      - mc-protocol
+      - mysql
+      - redis
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+networks:
+  mc-protocol:
+  mysql:
+  redis:
