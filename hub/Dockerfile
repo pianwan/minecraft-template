@@ -1,4 +1,4 @@
-FROM itzg/minecraft-server
+FROM itzg/minecraft-server:java21-alpine
 
 ENV EULA=TRUE
 ENV NETWORK_COMPRESSION_THRESHOLD=-1
@@ -23,6 +23,3 @@ RUN /usr/bin/download_plugins_from_ci https://ci.viaversion.com/ ViaVersion ViaV
 RUN /usr/bin/download_plugins_from_ci https://ci.viaversion.com/ ViaBackwards ViaBackwards
 RUN /usr/bin/download_plugins_from_ci https://ci.lucko.me/ LuckPerms LuckPerms-Bukkit
 RUN /usr/bin/download_plugins_from_ci https://ci.dmulloy2.net/ ProtocolLib ProtocolLib
-RUN /usr/bin/download_plugins_from_ci https://ci.athion.net/ FastAsyncWorldEdit FastAsyncWorldEdit-Paper
-RUN /usr/bin/download_plugins_from_ci https://ci.codemc.io/view/Author/job/pop4959 Chunky Chunky-Bukkit
-RUN /usr/bin/download_plugins_from_ci https://ci.codemc.io/view/Author/job/pop4959 ChunkyBorder ChunkyBorder-Bukkit

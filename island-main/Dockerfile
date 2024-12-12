@@ -1,4 +1,4 @@
-FROM itzg/minecraft-server
+FROM itzg/minecraft-server:java21-alpine
 
 ENV EULA=TRUE
 ENV NETWORK_COMPRESSION_THRESHOLD=-1

@@ -45,10 +45,6 @@ services:
     environment:
       TYPE: VELOCITY
       MEMORY: 512m
-      PLUGINS: |
-        /cached_plugins/ViaVersion.jar
-        /cached_plugins/LuckPerms-Velocity.jar
-        https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/velocity
     volumes:
       - ./proxy/data:/server
     ports:
@@ -72,11 +68,12 @@ services:
       dockerfile: Dockerfile
     container_name: mc-hub
     environment:
-      TYPE: PURPUR
-      VERSION: 1.21.4
+      TYPE: PAPER
+      VERSION: 1.12.2
       ONLINE_MODE: FALSE
       SERVER_NAME: HUB
       MEMORY: 2G
+      JVM_OPTS: "-Dpaper.disableChannelLimit=true" # FML register channel
     stdin_open: true
     restart: unless-stopped
     volumes:
@@ -95,6 +92,7 @@ services:
       context: ./island-main
       dockerfile: Dockerfile
     container_name: mc-island-main
+    # stop_grace_period: 30s
     environment:
       TYPE: PURPUR
       VERSION: 1.21.4

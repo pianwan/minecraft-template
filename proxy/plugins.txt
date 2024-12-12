@@ -1,0 +1,3 @@
+/cached_plugins/ViaVersion.jar
+/cached_plugins/LuckPerms-Velocity.jar
+https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/velocity

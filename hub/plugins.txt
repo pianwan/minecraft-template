@@ -1,8 +1,5 @@
 /cached_plugins/ViaVersion.jar
 /cached_plugins/ViaBackwards.jar
 /cached_plugins/LuckPerms-Bukkit.jar
-/cached_plugins/FastAsyncWorldEdit-Paper.jar
 /cached_plugins/ProtocolLib.jar
-/cached_plugins/Chunky-Bukkit.jar
-/cached_plugins/ChunkyBorder-Bukkit.jar
 https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
